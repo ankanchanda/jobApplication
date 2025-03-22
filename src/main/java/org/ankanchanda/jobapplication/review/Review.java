@@ -1,31 +1,32 @@
-package org.ankanchanda.jobapplication.job;
+package org.ankanchanda.jobapplication.review;
 
 import org.ankanchanda.jobapplication.company.Company;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 
 @Entity
-@Table(name = "jobs")
-public class Job {
-
+@Table(name = "reviews")
+public class Review {
+    
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
-    private String location;
-    private Double minimumSalary;
-    private Double maximumSalary;
+    private double rating;
 
+    @JsonIgnore
     @ManyToOne
     private Company company;
 
-    public Job() {
+    public Review() {
     }
 
     public Long getId() {
@@ -48,28 +49,12 @@ public class Job {
         this.description = description;
     }
 
-    public String getLocation() {
-        return location;
+    public double getRating() {
+        return rating;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Double getMinimumSalary() {
-        return minimumSalary;
-    }
-
-    public void setMinimumSalary(Double minimumSalary) {
-        this.minimumSalary = minimumSalary;
-    }
-
-    public Double getMaximumSalary() {
-        return maximumSalary;
-    }
-
-    public void setMaximumSalary(Double maximumSalary) {
-        this.maximumSalary = maximumSalary;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public Company getCompany() {
@@ -79,5 +64,4 @@ public class Job {
     public void setCompany(Company company) {
         this.company = company;
     }
-
 }

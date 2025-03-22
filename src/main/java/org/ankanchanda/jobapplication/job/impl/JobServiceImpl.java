@@ -1,47 +1,60 @@
 package org.ankanchanda.jobapplication.job.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.ankanchanda.jobapplication.job.Job;
+import org.ankanchanda.jobapplication.job.JobRepository;
 import org.ankanchanda.jobapplication.job.JobService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JobServiceImpl implements JobService {
-    private List<Job> jobs = new ArrayList<>();
-    private Long nextId = 1L;
+    private JobRepository jobRepository;
+
+    public JobServiceImpl(JobRepository jobRepository) {
+        this.jobRepository = jobRepository;
+    }
 
     @Override
     public List<Job> findAll() {
-        return jobs;
+        return jobRepository.findAll();
     }
 
     @Override
     public Job findJobById(Long id) {
-        return jobs.stream().filter(job -> job.getId().equals(id)).findFirst().orElse(null);
+        return jobRepository.findById(id).orElse(null);
     }
 
     @Override
     public void createJob(Job job) {
-        job.setId(nextId++);
-        jobs.add(job);
+        jobRepository.save(job);
     }
 
     @Override
     public boolean deleteJob(Long id) {
-        return jobs.removeIf(job -> job.getId().equals(id));
+        try {
+            jobRepository.deleteById(id);
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
-    public boolean updateJob(Long id, Job job) {
-        return jobs.stream().filter(j -> j.getId().equals(id)).findFirst().map(j -> {
-            j.setTitle(job.getTitle());
-            j.setDescription(job.getDescription());
-            j.setLocation(job.getLocation());
-            j.setMinimumSalary(job.getMinimumSalary());
-            j.setMaximumSalary(job.getMaximumSalary());
+    public boolean updateJob(Long id, Job updatedJob) {
+        Optional<Job> jobOptional = jobRepository.findById(id);
+        if(jobOptional.isPresent()){
+            Job job = jobOptional.get();
+            job.setTitle(updatedJob.getTitle());
+            job.setDescription(updatedJob.getDescription());
+            job.setMinimumSalary(updatedJob.getMinimumSalary());
+            job.setMaximumSalary(updatedJob.getMaximumSalary());
+            job.setLocation(updatedJob.getLocation());
+            jobRepository.save(job);
             return true;
-        }).orElse(false);
+        }
+        return false;
     }
 }
