@@ -1,0 +1,7 @@
+- `docker run -d --name db -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres`
+- `docker run -d --name=pgadmin -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=postgres dpage/pgadmin`
+- `docker exec -it pgadmin ping db` // Cannot work without network connectivity between the containers above
+- `docker network create my-network`
+- `docker run -d --name db --network my-network -e POSTGRES_PASSWORD=postgres postgres`
+- `docker run -d --name pgadmin --network my-network -e PGADMIN_DEFAULT_EMAIL=user@domain.com -e PGADMIN_DEFAULT_PASSWORD=pgadmin dpage/pgadmin4`
+- `docker run -d --name postgres_container -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e PGDATA=/data/postgres -v postgres:/data/postgres -p 5432:5432 --network postgres --restart unless-stopped postgres`
